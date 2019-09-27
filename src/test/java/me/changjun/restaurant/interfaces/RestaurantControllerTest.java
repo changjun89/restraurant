@@ -1,5 +1,6 @@
 package me.changjun.restaurant.interfaces;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import me.changjun.restaurant.application.RestaurantService;
 import me.changjun.restaurant.domain.MenuItem;
 import me.changjun.restaurant.domain.Restaurant;
@@ -9,14 +10,18 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -26,6 +31,9 @@ public class RestaurantControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private RestaurantService restaurantService;
@@ -70,4 +78,22 @@ public class RestaurantControllerTest {
                 .andExpect(jsonPath("name").value("Cyber Food"))
                 .andExpect(jsonPath("location").value("seoul"));
     }
+
+    @Test
+    public void create() throws Exception {
+        Restaurant restaurant = new Restaurant(1L, "비룡", "부산");
+        mockMvc.perform(post("/api/restaurants")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(restaurant))
+        )
+                .andExpect(status().isCreated())
+                .andExpect(header().string("location", "/api/restaurants/1"))
+                .andExpect(content().string("{}"))
+                .andDo(print());
+
+        verify(restaurantService).addRestaurant(any());
+
+    }
+
+
 }

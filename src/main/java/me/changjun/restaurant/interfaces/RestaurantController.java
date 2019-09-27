@@ -3,10 +3,11 @@ package me.changjun.restaurant.interfaces;
 import me.changjun.restaurant.application.RestaurantService;
 import me.changjun.restaurant.domain.Restaurant;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -25,5 +26,13 @@ public class RestaurantController {
     public Restaurant getRestaurants(@PathVariable(name = "id") Long id) {
         Restaurant restaurant = restaurantService.getRestaurantById(id);
         return restaurant;
+    }
+
+    @PostMapping(value = "/api/restaurants")
+    public ResponseEntity<?> create(@RequestBody Restaurant resource) throws URISyntaxException {
+        restaurantService.addRestaurant(resource);
+
+        URI uri = new URI("/api/restaurants/" + resource.getId());
+        return ResponseEntity.created(uri).body("{}");
     }
 }

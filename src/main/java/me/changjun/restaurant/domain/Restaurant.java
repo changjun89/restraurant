@@ -19,11 +19,20 @@ public class Restaurant {
     private String location;
     private List<MenuItem> menuItems = new ArrayList<>();
 
+    public Restaurant(String name, String location) {
+        this.name = name;
+        this.location = location;
+    }
+
     public Restaurant(long id, String name, String location) {
         this.id = id;
         this.name = name;
         this.location = location;
         this.menuItems = menuItems;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public void addMenuItem(MenuItem menuItem) {
