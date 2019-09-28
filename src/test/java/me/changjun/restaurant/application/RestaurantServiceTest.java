@@ -11,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,7 +49,7 @@ public class RestaurantServiceTest {
         restaurant.addMenuItem(new MenuItem("Kimchi"));
         restaurants.add(restaurant);
         given(restaurantRepository.findAll()).willReturn(restaurants);
-        given(restaurantRepository.findById(1L)).willReturn(restaurant);
+        given(restaurantRepository.findById(1L)).willReturn(Optional.of(restaurant));
 
     }
 

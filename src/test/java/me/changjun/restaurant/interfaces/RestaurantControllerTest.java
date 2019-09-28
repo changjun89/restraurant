@@ -82,6 +82,9 @@ public class RestaurantControllerTest {
     @Test
     public void create() throws Exception {
         Restaurant restaurant = new Restaurant(1L, "비룡", "부산");
+
+        given(restaurantService.addRestaurant(any())).willReturn(restaurant);
+
         mockMvc.perform(post("/api/restaurants")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(objectMapper.writeValueAsString(restaurant))
@@ -92,8 +95,5 @@ public class RestaurantControllerTest {
                 .andDo(print());
 
         verify(restaurantService).addRestaurant(any());
-
     }
-
-
 }

@@ -1,22 +1,27 @@
 package me.changjun.restaurant.domain;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = "id")
 public class Restaurant {
 
+    @Id
+    @GeneratedValue
     private Long id;
     private String name;
     private String location;
+    @Transient
     private List<MenuItem> menuItems = new ArrayList<>();
 
     public Restaurant(String name, String location) {
@@ -29,10 +34,6 @@ public class Restaurant {
         this.name = name;
         this.location = location;
         this.menuItems = menuItems;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public void addMenuItem(MenuItem menuItem) {
