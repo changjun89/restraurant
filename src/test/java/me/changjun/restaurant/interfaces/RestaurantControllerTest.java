@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -41,7 +42,8 @@ public class RestaurantControllerTest {
     @Test
     public void getRestaurants() throws Exception {
         List<Restaurant> restaurants = new ArrayList<>();
-        restaurants.add(new Restaurant(1L, "Bob zip", "seoul"));
+        Restaurant restaurant = Restaurant.builder().id(1L).name("Bob zip").location("seoul").build();
+        restaurants.add(restaurant);
 
         given(restaurantService.getRestaurants()).willReturn(restaurants);
 
@@ -55,10 +57,10 @@ public class RestaurantControllerTest {
     @Test
     public void getRestaurant() throws Exception {
 
-        Restaurant restaurant = new Restaurant(1L, "Bob zip", "seoul");
-        restaurant.addMenuItem(new MenuItem("Kimchi"));
+        Restaurant restaurant = Restaurant.builder().id(1L).name("Bob zip").location("seoul").build();
+        restaurant.setMenuItems(Arrays.asList(new MenuItem("Kimchi")));
 
-        Restaurant restaurant2 = new Restaurant(20L, "Cyber Food", "seoul");
+        Restaurant restaurant2 = Restaurant.builder().id(20L).name("Cyber Food").location("seoul").build();
 
         given(restaurantService.getRestaurantById(1L)).willReturn(restaurant);
         mockMvc.perform(get("/api/restaurants/1"))
@@ -67,7 +69,7 @@ public class RestaurantControllerTest {
                 .andExpect(jsonPath("id").value(1L))
                 .andExpect(jsonPath("name").value("Bob zip"))
                 .andExpect(jsonPath("location").value("seoul"))
-                .andExpect(jsonPath("menuItems[0].name").value("Kimchi"))
+                .andExpect(jsonPath("menuItem[0].name").value("Kimchi"))
                 .andExpect(content().string(Matchers.containsString("Kimchi")));
 
         given(restaurantService.getRestaurantById(20L)).willReturn(restaurant2);
@@ -81,9 +83,9 @@ public class RestaurantControllerTest {
 
     @Test
     public void create() throws Exception {
-        Restaurant restaurant = new Restaurant(1L, "비룡", "부산");
+        Restaurant restaurant = Restaurant.builder().id(1L).name("밥집").location("서울").build();
 
-        given(restaurantService.addRestaurant(any())).willReturn(restaurant);
+        given(restaurantService.addRestaurant(restaurant)).willReturn(restaurant);
 
         mockMvc.perform(post("/api/restaurants")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -99,7 +101,7 @@ public class RestaurantControllerTest {
 
     @Test
     public void update() throws Exception {
-        Restaurant restaurant = new Restaurant("비룡_수정", "부산");
+        Restaurant restaurant = Restaurant.builder().name("비룡_수정").location("부산").build();
         mockMvc.perform(patch("/api/restaurants/1")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(objectMapper.writeValueAsString(restaurant)))

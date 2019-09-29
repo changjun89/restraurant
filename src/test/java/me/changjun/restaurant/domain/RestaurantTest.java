@@ -8,7 +8,10 @@ public class RestaurantTest {
 
     @Test
     public void creation() {
-        Restaurant restaurant = new Restaurant(1L, "Bob zip", "seoul");
+        Restaurant restaurant = Restaurant.builder().id(1L)
+                .name("Bob zip")
+                .location("seoul")
+                .build();
 
         assertThat(restaurant.getId()).isEqualTo(1L);
         assertThat(restaurant.getName()).isEqualTo("Bob zip");

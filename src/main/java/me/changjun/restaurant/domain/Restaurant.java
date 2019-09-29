@@ -12,7 +12,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Restaurant {
 
@@ -22,25 +24,14 @@ public class Restaurant {
     private String name;
     private String location;
     @Transient
-    private List<MenuItem> menuItems = new ArrayList<>();
-
-    public Restaurant(String name, String location) {
-        this.name = name;
-        this.location = location;
-    }
-
-    public Restaurant(long id, String name, String location) {
-        this.id = id;
-        this.name = name;
-        this.location = location;
-        this.menuItems = menuItems;
-    }
+    private List<MenuItem> menuItem;
 
     public void addMenuItem(MenuItem menuItem) {
-        menuItems.add(menuItem);
+        this.menuItem.add(menuItem);
     }
 
     public void setMenuItems(List<MenuItem> menuItems) {
+        this.menuItem = new ArrayList<>();
         for (MenuItem menuItem : menuItems) {
             addMenuItem(menuItem);
         }

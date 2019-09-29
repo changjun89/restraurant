@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,8 +46,11 @@ public class RestaurantServiceTest {
 
     private void mockRestaurantRepository() {
         List<Restaurant> restaurants = new ArrayList<>();
-        Restaurant restaurant = new Restaurant(1L, "Bob zip", "seoul");
-        restaurant.addMenuItem(new MenuItem("Kimchi"));
+        Restaurant restaurant = Restaurant.builder()
+                .id(1L)
+                .name("Bob zip")
+                .location("seoul").build();
+        restaurant.setMenuItem(Arrays.asList(new MenuItem("Kimchi")));
         restaurants.add(restaurant);
         given(restaurantRepository.findAll()).willReturn(restaurants);
         given(restaurantRepository.findById(1L)).willReturn(Optional.of(restaurant));
@@ -58,7 +62,7 @@ public class RestaurantServiceTest {
         List<Restaurant> restaurants = restaurantService.getRestaurants();
         assertThat(restaurants.get(0).getId()).isEqualTo(1L);
 
-        List<MenuItem> menuItems = restaurants.get(0).getMenuItems();
+        List<MenuItem> menuItems = restaurants.get(0).getMenuItem();
         assertThat(menuItems.get(0).getName()).isEqualTo("Kimchi");
     }
 
@@ -67,17 +71,20 @@ public class RestaurantServiceTest {
         Restaurant restaurant = restaurantService.getRestaurantById(1L);
         assertThat(restaurant.getId()).isEqualTo(1L);
 
-        String menuItemName = restaurant.getMenuItems().get(0).getName();
+        String menuItemName = restaurant.getMenuItem().get(0).getName();
         assertThat(menuItemName).isEqualTo("Kimchi");
     }
 
     @Test
     public void addRestaurant() {
-        Restaurant restaurant = new Restaurant("비룡", "서울");
-        Restaurant saved = new Restaurant(1L, "비룡", "서울");
+        given(restaurantRepository.save(any())).will(invocationOnMock ->
+        {
+            Restaurant restaurant = invocationOnMock.getArgument(0);
+            restaurant.setId(1L);
+            return restaurant;
+        });
 
-        given(restaurantRepository.save(any())).willReturn(saved);
-
+        Restaurant restaurant = Restaurant.builder().name("비룡").location("서울").build();
         Restaurant newRestaurant = restaurantService.addRestaurant(restaurant);
 
         assertThat(newRestaurant.getId()).isEqualTo(1L);
@@ -85,7 +92,7 @@ public class RestaurantServiceTest {
 
     @Test
     public void updateRestaurants() {
-        Restaurant restaurant = new Restaurant(1L, "밥집", "서울");
+        Restaurant restaurant = Restaurant.builder().id(1L).name("밥집").location("서울").build();
         given(restaurantRepository.findById(1L)).willReturn(Optional.of(restaurant));
 
         restaurantService.updateRestaurants(1L, "술집", "부산");
