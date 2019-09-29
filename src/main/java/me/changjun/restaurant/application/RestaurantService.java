@@ -6,6 +6,7 @@ import me.changjun.restaurant.domain.Restaurant;
 import me.changjun.restaurant.domain.RestaurantRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -37,5 +38,12 @@ public class RestaurantService {
 
     public Restaurant addRestaurant(Restaurant restaurant) {
         return restaurantRepository.save(restaurant);
+    }
+
+    @Transactional
+    public Restaurant updateRestaurants(Long id, String name, String location) {
+        Restaurant restaurant = restaurantRepository.findById(id).orElse(null);
+        Restaurant updatedRestaurant = restaurant.updateInfo(name, location);
+        return updatedRestaurant;
     }
 }

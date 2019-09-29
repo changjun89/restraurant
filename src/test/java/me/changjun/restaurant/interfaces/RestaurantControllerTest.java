@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,8 +21,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -90,10 +90,22 @@ public class RestaurantControllerTest {
                 .content(objectMapper.writeValueAsString(restaurant))
         )
                 .andExpect(status().isCreated())
-                .andExpect(header().string("location", "/api/restaurants/1"))
+                .andExpect(header().string(HttpHeaders.LOCATION, "/api/restaurants/1"))
                 .andExpect(content().string("{}"))
                 .andDo(print());
 
         verify(restaurantService).addRestaurant(any());
+    }
+
+    @Test
+    public void update() throws Exception {
+        Restaurant restaurant = new Restaurant("비룡_수정", "부산");
+        mockMvc.perform(patch("/api/restaurants/1")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(restaurant)))
+                .andExpect(status().isOk());
+
+        verify(restaurantService).updateRestaurants(1L, restaurant.getName(), restaurant.getLocation());
+
     }
 }
