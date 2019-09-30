@@ -1,5 +1,6 @@
 package me.changjun.restaurant.interfaces;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.changjun.restaurant.application.RestaurantService;
 import me.changjun.restaurant.domain.MenuItem;
@@ -82,7 +83,7 @@ public class RestaurantControllerTest {
     }
 
     @Test
-    public void create() throws Exception {
+    public void createWithValidDate() throws Exception {
         Restaurant restaurant = Restaurant.builder().id(1L).name("밥집").location("서울").build();
 
         given(restaurantService.addRestaurant(restaurant)).willReturn(restaurant);
@@ -100,7 +101,21 @@ public class RestaurantControllerTest {
     }
 
     @Test
-    public void update() throws Exception {
+    public void createWithInValidDate() throws Exception {
+
+        Restaurant restaurant = Restaurant.builder().build();
+        given(restaurantService.addRestaurant(restaurant)).willReturn(restaurant);
+
+        mockMvc.perform(post("/api/restaurants")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(restaurant))
+        )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    public void updateWithValidRequest() throws Exception {
         Restaurant restaurant = Restaurant.builder().name("비룡_수정").location("부산").build();
         mockMvc.perform(patch("/api/restaurants/1")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -108,6 +123,15 @@ public class RestaurantControllerTest {
                 .andExpect(status().isOk());
 
         verify(restaurantService).updateRestaurants(1L, restaurant.getName(), restaurant.getLocation());
+    }
 
+
+    @Test
+    public void updateWithInValidRequest() throws Exception {
+        Restaurant restaurant = Restaurant.builder().build();
+        mockMvc.perform(patch("/api/restaurants/1")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(restaurant)))
+                .andExpect(status().isBadRequest());
     }
 }
