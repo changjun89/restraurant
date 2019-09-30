@@ -1,9 +1,6 @@
 package me.changjun.restaurant.application;
 
-import me.changjun.restaurant.domain.MenuItem;
-import me.changjun.restaurant.domain.MenuItemRepository;
-import me.changjun.restaurant.domain.Restaurant;
-import me.changjun.restaurant.domain.RestaurantRepository;
+import me.changjun.restaurant.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -30,7 +27,7 @@ public class RestaurantService {
     }
 
     public Restaurant getRestaurantById(Long id) {
-        Restaurant restaurant = restaurantRepository.findById(id).orElse(null);
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() -> new RestaurantNotFoundException(id));
         List<MenuItem> menuItems = menuItemRepository.findAllByRestaurantId(id);
         restaurant.setMenuItem(menuItems);
         return restaurant;

@@ -1,9 +1,6 @@
 package me.changjun.restaurant.application;
 
-import me.changjun.restaurant.domain.MenuItem;
-import me.changjun.restaurant.domain.MenuItemRepository;
-import me.changjun.restaurant.domain.Restaurant;
-import me.changjun.restaurant.domain.RestaurantRepository;
+import me.changjun.restaurant.domain.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -66,8 +63,13 @@ public class RestaurantServiceTest {
         assertThat(menuItems.get(0).getName()).isEqualTo("Kimchi");
     }
 
+    @Test(expected = RestaurantNotFoundException.class)
+    public void getRestaurantByIdNotWithExisted() {
+        restaurantService.getRestaurantById(404L);
+    }
+
     @Test
-    public void getRestaurantById() {
+    public void getRestaurantByIdWithExisted() {
         Restaurant restaurant = restaurantService.getRestaurantById(1L);
         assertThat(restaurant.getId()).isEqualTo(1L);
 

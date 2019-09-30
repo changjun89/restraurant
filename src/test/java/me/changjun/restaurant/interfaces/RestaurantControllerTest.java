@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.changjun.restaurant.application.RestaurantService;
 import me.changjun.restaurant.domain.MenuItem;
 import me.changjun.restaurant.domain.Restaurant;
+import me.changjun.restaurant.domain.RestaurantNotFoundException;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -80,6 +81,14 @@ public class RestaurantControllerTest {
                 .andExpect(jsonPath("id").value(20L))
                 .andExpect(jsonPath("name").value("Cyber Food"))
                 .andExpect(jsonPath("location").value("seoul"));
+    }
+
+    @Test
+    public void getRestaurantWithNotExisted() throws Exception {
+        given(restaurantService.getRestaurantById(404L)).willThrow(new RestaurantNotFoundException(404L));
+        mockMvc.perform(get("/api/restaurants/404"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("{}"));
     }
 
     @Test
