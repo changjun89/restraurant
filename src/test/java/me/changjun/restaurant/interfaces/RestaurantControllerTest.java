@@ -1,6 +1,5 @@
 package me.changjun.restaurant.interfaces;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.changjun.restaurant.application.RestaurantService;
 import me.changjun.restaurant.domain.MenuItem;
@@ -29,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest
+@WebMvcTest(RestaurantController.class)
 public class RestaurantControllerTest {
 
     @Autowired
