@@ -23,7 +23,7 @@ public class ReviewController {
 
     @PostMapping("/api/restaurants/{restaurantId}/reviews")
     public ResponseEntity create(@PathVariable Long restaurantId, @Valid @RequestBody Review review) throws URISyntaxException {
-        Review createdReview = reviewService.addReview(review);
+        Review createdReview = reviewService.addReview(restaurantId,review);
         URI uri = new URI("/api/restaurants/" + restaurantId + "/reviews/" + createdReview.getId());
         return ResponseEntity.created(uri).body("{}");
     }

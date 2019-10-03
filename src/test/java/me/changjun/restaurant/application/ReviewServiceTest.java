@@ -28,7 +28,7 @@ public class ReviewServiceTest {
                 .name("chanjun")
                 .score(3)
                 .description("good").build();
-        reviewService.addReview(review);
+        reviewService.addReview(1L,review);
         
         verify(reviewRepository).save(any());
     }

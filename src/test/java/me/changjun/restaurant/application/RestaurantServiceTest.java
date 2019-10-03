@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +14,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 public class RestaurantServiceTest {
 
@@ -25,14 +28,24 @@ public class RestaurantServiceTest {
     @Mock
     private MenuItemRepository menuItemRepository;
 
+    @Mock
+    private ReviewRepository reviewRepository;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
         mockRestaurantRepository();
         mockMenuItemRepository();
+        mockMenuReviewRepository();
 
-        restaurantService = new RestaurantService(restaurantRepository, menuItemRepository);
+        restaurantService = new RestaurantService(restaurantRepository, menuItemRepository, reviewRepository);
+    }
+
+    private void mockMenuReviewRepository() {
+        List<Review> reviews = new ArrayList<>();
+        reviews.add(Review.builder().name("changjun").score(2).description("soso").build());
+        given(reviewRepository.findAllByRestaurantId(1L)).willReturn(reviews);
     }
 
     private void mockMenuItemRepository() {
@@ -75,6 +88,12 @@ public class RestaurantServiceTest {
 
         String menuItemName = restaurant.getMenuItem().get(0).getName();
         assertThat(menuItemName).isEqualTo("Kimchi");
+
+        String description = restaurant.getSetReviews().get(0).getDescription();
+        assertThat(description).isEqualTo("soso");
+
+        verify(menuItemRepository).findAllByRestaurantId(eq(1L));
+        verify(reviewRepository).findAllByRestaurantId(eq(1L));
     }
 
     @Test

@@ -5,6 +5,7 @@ import me.changjun.restaurant.application.RestaurantService;
 import me.changjun.restaurant.domain.MenuItem;
 import me.changjun.restaurant.domain.Restaurant;
 import me.changjun.restaurant.domain.RestaurantNotFoundException;
+import me.changjun.restaurant.domain.Review;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,7 +62,12 @@ public class RestaurantControllerTest {
         Restaurant restaurant = Restaurant.builder().id(1L).name("Bob zip").location("seoul").build();
         restaurant.setMenuItems(Arrays.asList(new MenuItem("Kimchi")));
 
+        Review review = Review.builder().name("changjun").score(3).description("good").build();
+        List<Review> reviews = Arrays.asList(review);
+        restaurant.setReviews(reviews);
+
         Restaurant restaurant2 = Restaurant.builder().id(20L).name("Cyber Food").location("seoul").build();
+
 
         given(restaurantService.getRestaurantById(1L)).willReturn(restaurant);
         mockMvc.perform(get("/api/restaurants/1"))
@@ -71,7 +77,8 @@ public class RestaurantControllerTest {
                 .andExpect(jsonPath("name").value("Bob zip"))
                 .andExpect(jsonPath("location").value("seoul"))
                 .andExpect(jsonPath("menuItem[0].name").value("Kimchi"))
-                .andExpect(content().string(Matchers.containsString("Kimchi")));
+                .andExpect(content().string(Matchers.containsString("Kimchi")))
+                .andExpect(content().string(Matchers.containsString("good")));
 
         given(restaurantService.getRestaurantById(20L)).willReturn(restaurant2);
         mockMvc.perform(get("/api/restaurants/20"))
