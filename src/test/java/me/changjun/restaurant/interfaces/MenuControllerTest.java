@@ -33,7 +33,6 @@ public class MenuControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
         )
                 .andExpect(status().isOk());
-
         verify(menuItemService).bulkUpdate(eq(1L), any());
     }
 }
