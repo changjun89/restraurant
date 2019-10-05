@@ -2,11 +2,8 @@ package me.changjun.restaurant.interfaces;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.changjun.restaurant.application.RestaurantService;
-import me.changjun.restaurant.domain.MenuItem;
 import me.changjun.restaurant.domain.Restaurant;
 import me.changjun.restaurant.domain.RestaurantNotFoundException;
-import me.changjun.restaurant.domain.Review;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -59,15 +55,11 @@ public class RestaurantControllerTest {
     @Test
     public void getRestaurant() throws Exception {
 
-        Restaurant restaurant = Restaurant.builder().id(1L).name("Bob zip").location("seoul").build();
-        restaurant.setMenuItems(Arrays.asList(new MenuItem("Kimchi")));
-
-        Review review = Review.builder().name("changjun").score(3).description("good").build();
-        List<Review> reviews = Arrays.asList(review);
-        restaurant.setReviews(reviews);
-
-        Restaurant restaurant2 = Restaurant.builder().id(20L).name("Cyber Food").location("seoul").build();
-
+        Restaurant restaurant = Restaurant.builder()
+                .id(1L)
+                .name("Bob zip")
+                .location("seoul")
+                .build();
 
         given(restaurantService.getRestaurantById(1L)).willReturn(restaurant);
         mockMvc.perform(get("/api/restaurants/1"))
@@ -75,17 +67,6 @@ public class RestaurantControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(1L))
                 .andExpect(jsonPath("name").value("Bob zip"))
-                .andExpect(jsonPath("location").value("seoul"))
-                .andExpect(jsonPath("menuItem[0].name").value("Kimchi"))
-                .andExpect(content().string(Matchers.containsString("Kimchi")))
-                .andExpect(content().string(Matchers.containsString("good")));
-
-        given(restaurantService.getRestaurantById(20L)).willReturn(restaurant2);
-        mockMvc.perform(get("/api/restaurants/20"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("id").value(20L))
-                .andExpect(jsonPath("name").value("Cyber Food"))
                 .andExpect(jsonPath("location").value("seoul"));
     }
 
@@ -99,7 +80,12 @@ public class RestaurantControllerTest {
 
     @Test
     public void createWithValidDate() throws Exception {
-        Restaurant restaurant = Restaurant.builder().id(1L).name("밥집").location("서울").build();
+        Restaurant restaurant = Restaurant
+                .builder()
+                .id(1L)
+                .name("밥집")
+                .location("서울")
+                .build();
 
         given(restaurantService.addRestaurant(restaurant)).willReturn(restaurant);
 
@@ -117,7 +103,6 @@ public class RestaurantControllerTest {
 
     @Test
     public void createWithInValidDate() throws Exception {
-
         Restaurant restaurant = Restaurant.builder().build();
         given(restaurantService.addRestaurant(restaurant)).willReturn(restaurant);
 
@@ -131,7 +116,12 @@ public class RestaurantControllerTest {
 
     @Test
     public void updateWithValidRequest() throws Exception {
-        Restaurant restaurant = Restaurant.builder().name("비룡_수정").location("부산").build();
+        Restaurant restaurant = Restaurant
+                .builder()
+                .name("비룡_수정")
+                .location("부산")
+                .build();
+
         mockMvc.perform(patch("/api/restaurants/1")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(objectMapper.writeValueAsString(restaurant)))

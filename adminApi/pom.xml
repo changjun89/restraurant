@@ -10,7 +10,7 @@
     <groupId>me.changjun</groupId>
     <artifactId>adminApi</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo</name>
+    <name>admin api</name>
     <description>Restaurant adminApi</description>
 
     <properties>

@@ -25,33 +25,11 @@ public class RestaurantServiceTest {
     @Mock
     private RestaurantRepository restaurantRepository;
 
-    @Mock
-    private MenuItemRepository menuItemRepository;
-
-    @Mock
-    private ReviewRepository reviewRepository;
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-
         mockRestaurantRepository();
-        mockMenuItemRepository();
-        mockMenuReviewRepository();
-
-        restaurantService = new RestaurantService(restaurantRepository, menuItemRepository, reviewRepository);
-    }
-
-    private void mockMenuReviewRepository() {
-        List<Review> reviews = new ArrayList<>();
-        reviews.add(Review.builder().name("changjun").score(2).description("soso").build());
-        given(reviewRepository.findAllByRestaurantId(1L)).willReturn(reviews);
-    }
-
-    private void mockMenuItemRepository() {
-        List<MenuItem> menuItems = new ArrayList<>();
-        menuItems.add(new MenuItem("Kimchi"));
-        given(menuItemRepository.findAllByRestaurantId(1L)).willReturn(menuItems);
+        restaurantService = new RestaurantService(restaurantRepository);
     }
 
     private void mockRestaurantRepository() {
@@ -85,15 +63,6 @@ public class RestaurantServiceTest {
     public void getRestaurantByIdWithExisted() {
         Restaurant restaurant = restaurantService.getRestaurantById(1L);
         assertThat(restaurant.getId()).isEqualTo(1L);
-
-        String menuItemName = restaurant.getMenuItem().get(0).getName();
-        assertThat(menuItemName).isEqualTo("Kimchi");
-
-        String description = restaurant.getSetReviews().get(0).getDescription();
-        assertThat(description).isEqualTo("soso");
-
-        verify(menuItemRepository).findAllByRestaurantId(eq(1L));
-        verify(reviewRepository).findAllByRestaurantId(eq(1L));
     }
 
     @Test

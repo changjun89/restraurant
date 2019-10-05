@@ -35,4 +35,5 @@ public class MenuControllerTest {
                 .andExpect(status().isOk());
         verify(menuItemService).bulkUpdate(eq(1L), any());
     }
+
 }
