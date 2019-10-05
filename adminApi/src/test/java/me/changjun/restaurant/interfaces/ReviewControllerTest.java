@@ -1,25 +1,22 @@
 package me.changjun.restaurant.interfaces;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.changjun.restaurant.application.ReviewService;
 import me.changjun.restaurant.domain.Review;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -31,39 +28,24 @@ public class ReviewControllerTest {
     @MockBean
     private ReviewService reviewService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-
-
     @Test
-    public void createWithValidData() throws Exception {
-        Review review = Review.builder().id(1L)
+    public void reviewList() throws Exception {
+        //given
+        List<Review> mockReviews = new ArrayList<>();
+        Review mockReview = Review.builder()
                 .name("changjun")
                 .score(3)
-                .description("good")
+                .description("soso")
                 .build();
+        mockReviews.add(mockReview);
 
-        given(reviewService.addReview(eq(1L),any())).willReturn(review);
-        mockMvc.perform(post("/api/restaurants/1/reviews")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content("{\"name\":\"changjun\",\"score\":3,\"description\":\"good\"}")
-        )
-                .andExpect(status().isCreated())
-                .andExpect(header().string(HttpHeaders.LOCATION,"/api/restaurants/1/reviews/1"));
+        //when
+        given(reviewService.getReviews()).willReturn(mockReviews);
 
-        verify(reviewService).addReview(eq(1L),any());
-    }
+        //then
+        mockMvc.perform(get("/api/reviews"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(Matchers.containsString("soso")));
 
-
-    @Test
-    public void createWithInValidData() throws Exception {
-        mockMvc.perform(post("/api/restaurants/1/reviews")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content("{}")
-        )
-                .andExpect(status().isBadRequest());
-
-        verify(reviewService,never()).addReview(eq(1L),any());
     }
 }
