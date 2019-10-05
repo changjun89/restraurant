@@ -4,6 +4,7 @@ import me.changjun.restaurant.domain.MenuItem;
 import me.changjun.restaurant.domain.MenuItemRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,5 +28,9 @@ public class MenuItemService {
         }
         menuItem.setRestaurantId(id);
         menuItemRepository.save(menuItem);
+    }
+
+    public List<MenuItem> getMenuItemsByRestaurantId(long restaurantId) {
+        return menuItemRepository.findAllByRestaurantId(restaurantId);
     }
 }
