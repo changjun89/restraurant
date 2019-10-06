@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 public class RegionServiceTest {
 
@@ -42,5 +44,27 @@ public class RegionServiceTest {
         Region region = regions.get(0);
 
         assertThat(region.getName()).isEqualTo("서울");
+    }
+
+    @Test
+    public void addRegion() {
+        //given
+        Region region = Region.builder()
+                .name("서울")
+                .build();
+        Region newRegion = Region.builder()
+                .id(1L)
+                .name("서울")
+                .build();
+        given(regionRepository.save(region)).willReturn(newRegion);
+
+        //when
+        Region createdRegion = regionService.addRegion(region);
+
+        //then
+        verify(regionRepository).save(any());
+        assertThat(createdRegion.getName()).isEqualTo("서울");
+        assertThat(createdRegion.getId()).isEqualTo(1L);
+
     }
 }

@@ -10,6 +10,7 @@
     <groupId>me.changjun</groupId>
     <artifactId>adminApi</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>admin api</name>
     <description>Restaurant adminApi</description>
 
@@ -21,6 +22,7 @@
         <dependency>
             <groupId>me.changjun</groupId>
             <artifactId>common</artifactId>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -38,6 +40,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

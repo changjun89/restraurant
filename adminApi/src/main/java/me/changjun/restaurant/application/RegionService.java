@@ -17,4 +17,8 @@ public class RegionService {
     public List<Region> getRegions() {
         return regionRepository.findAll();
     }
+
+    public Region addRegion(Region region) {
+        return regionRepository.save(region);
+    }
 }
