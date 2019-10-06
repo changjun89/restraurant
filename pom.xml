@@ -14,8 +14,8 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>adminApi</module>
         <module>common</module>
+        <module>adminApi</module>
         <module>customerApi</module>
     </modules>
     <name>restaurant</name>
@@ -31,8 +31,6 @@
                 <groupId>me.changjun</groupId>
                 <artifactId>common</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
-                <type>jar</type>
-                <scope>compile</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
