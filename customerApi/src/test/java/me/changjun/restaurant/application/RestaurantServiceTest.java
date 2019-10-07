@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -57,19 +56,23 @@ public class RestaurantServiceTest {
         List<Restaurant> restaurants = new ArrayList<>();
         Restaurant restaurant = Restaurant.builder()
                 .id(1L)
+                .categoryId(1L)
                 .name("Bob zip")
                 .location("서울").build();
         restaurant.setMenuItem(Arrays.asList(new MenuItem("Kimchi")));
         restaurants.add(restaurant);
-        given(restaurantRepository.findAllByLocationContaining("서울")).willReturn(restaurants);
+        given(restaurantRepository.findAllByLocationContainingAndCategoryId("서울", 1L)).willReturn(restaurants);
         given(restaurantRepository.findById(1L)).willReturn(Optional.of(restaurant));
 
     }
 
     @Test
     public void getRestaurants() {
-        List<Restaurant> restaurants = restaurantService.getRestaurants("서울");
+        List<Restaurant> restaurants = restaurantService.getRestaurants("서울", 1L);
         assertThat(restaurants.get(0).getId()).isEqualTo(1L);
+        assertThat(restaurants.get(0).getCategoryId()).isEqualTo(1L);
+        assertThat(restaurants.get(0).getLocation()).isEqualTo("서울");
+
 
         List<MenuItem> menuItems = restaurants.get(0).getMenuItem();
         assertThat(menuItems.get(0).getName()).isEqualTo("Kimchi");

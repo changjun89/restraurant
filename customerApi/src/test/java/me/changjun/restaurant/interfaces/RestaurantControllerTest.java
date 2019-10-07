@@ -12,8 +12,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -21,10 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -44,12 +40,17 @@ public class RestaurantControllerTest {
     @Test
     public void getRestaurants() throws Exception {
         List<Restaurant> restaurants = new ArrayList<>();
-        Restaurant restaurant = Restaurant.builder().id(1L).name("Bob zip").location("서울").build();
+        Restaurant restaurant = Restaurant.builder()
+                .id(1L)
+                .categoryId(1L)
+                .name("Bob zip")
+                .location("서울")
+                .build();
         restaurants.add(restaurant);
 
-        given(restaurantService.getRestaurants("서울")).willReturn(restaurants);
+        given(restaurantService.getRestaurants("서울", 1L)).willReturn(restaurants);
 
-        mockMvc.perform(get("/api/restaurants?region=서울"))
+        mockMvc.perform(get("/api/restaurants?region=서울&categoryId=1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("Bob zip"))

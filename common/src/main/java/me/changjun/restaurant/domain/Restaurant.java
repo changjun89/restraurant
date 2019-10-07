@@ -24,6 +24,9 @@ public class Restaurant {
     @Id
     @GeneratedValue
     private Long id;
+
+    @NotNull
+    private Long categoryId;
     @NotNull
     @NotEmpty
     private String name;

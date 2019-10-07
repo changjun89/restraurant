@@ -17,8 +17,8 @@ public class RestaurantService {
         this.reviewRepository = reviewRepository;
     }
 
-    public List<Restaurant> getRestaurants(String region) {
-        List<Restaurant> restaurants = restaurantRepository.findAllByLocationContaining(region);
+    public List<Restaurant> getRestaurants(String region, long categoryId) {
+        List<Restaurant> restaurants = restaurantRepository.findAllByLocationContainingAndCategoryId(region, categoryId);
 
         for (Restaurant restaurant : restaurants) {
             restaurant.setMenuItem(menuItemRepository.findAllByRestaurantId(restaurant.getId()));

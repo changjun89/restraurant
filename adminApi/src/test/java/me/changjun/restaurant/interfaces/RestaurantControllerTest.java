@@ -83,6 +83,7 @@ public class RestaurantControllerTest {
         Restaurant restaurant = Restaurant
                 .builder()
                 .id(1L)
+                .categoryId(1L)
                 .name("밥집")
                 .location("서울")
                 .build();
@@ -118,6 +119,7 @@ public class RestaurantControllerTest {
     public void updateWithValidRequest() throws Exception {
         Restaurant restaurant = Restaurant
                 .builder()
+                .categoryId(1L)
                 .name("비룡_수정")
                 .location("부산")
                 .build();
