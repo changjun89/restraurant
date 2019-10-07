@@ -5,6 +5,10 @@ spring:
     hibernate:
       ddl-auto: update
 
+  h2:
+    console:
+      enabled: true
+
 ---
 spring:
   profiles: test

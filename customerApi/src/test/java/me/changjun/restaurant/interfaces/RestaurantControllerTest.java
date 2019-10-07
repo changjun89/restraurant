@@ -44,16 +44,16 @@ public class RestaurantControllerTest {
     @Test
     public void getRestaurants() throws Exception {
         List<Restaurant> restaurants = new ArrayList<>();
-        Restaurant restaurant = Restaurant.builder().id(1L).name("Bob zip").location("seoul").build();
+        Restaurant restaurant = Restaurant.builder().id(1L).name("Bob zip").location("서울").build();
         restaurants.add(restaurant);
 
-        given(restaurantService.getRestaurants()).willReturn(restaurants);
+        given(restaurantService.getRestaurants("서울")).willReturn(restaurants);
 
-        mockMvc.perform(get("/api/restaurants"))
+        mockMvc.perform(get("/api/restaurants?region=서울"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("Bob zip"))
-                .andExpect(jsonPath("$[0].location").value("seoul"));
+                .andExpect(jsonPath("$[0].location").value("서울"));
     }
 
     @Test

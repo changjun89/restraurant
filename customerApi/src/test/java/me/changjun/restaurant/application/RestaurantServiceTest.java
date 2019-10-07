@@ -58,17 +58,17 @@ public class RestaurantServiceTest {
         Restaurant restaurant = Restaurant.builder()
                 .id(1L)
                 .name("Bob zip")
-                .location("seoul").build();
+                .location("서울").build();
         restaurant.setMenuItem(Arrays.asList(new MenuItem("Kimchi")));
         restaurants.add(restaurant);
-        given(restaurantRepository.findAll()).willReturn(restaurants);
+        given(restaurantRepository.findAllByLocationContaining("서울")).willReturn(restaurants);
         given(restaurantRepository.findById(1L)).willReturn(Optional.of(restaurant));
 
     }
 
     @Test
     public void getRestaurants() {
-        List<Restaurant> restaurants = restaurantService.getRestaurants();
+        List<Restaurant> restaurants = restaurantService.getRestaurants("서울");
         assertThat(restaurants.get(0).getId()).isEqualTo(1L);
 
         List<MenuItem> menuItems = restaurants.get(0).getMenuItem();
