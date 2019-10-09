@@ -18,4 +18,16 @@ public class UserService {
     public List<User> getUsers() {
         return userRepository.findAll();
     }
+
+    public User addUser(User resource) {
+        return resource;
+    }
+
+    public User addUser(String email, String name) {
+        User user = User.builder()
+                .name(name)
+                .email(email)
+                .build();
+        return userRepository.save(user);
+    }
 }
