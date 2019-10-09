@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -59,5 +60,31 @@ public class UserServiceTest {
         verify(userRepository).save(any());
         assertThat(user.getName()).isEqualTo("changjun");
         assertThat(user.getEmail()).isEqualTo("leechang0423@naver.com");
+    }
+
+    @Test
+    public void updateUser() {
+        Long id = 1L;
+        String email = "leechang0423@naver.com";
+        String name = "changjun";
+        int level = 100;
+
+        User mockUser = User.builder()
+                .id(id)
+                .name("superMan")
+                .email("leechang0423@gamil.com")
+                .level(50)
+                .build();
+
+        given(userRepository.findById(id)).willReturn(Optional.of(mockUser));
+
+        User user = userService.updateUser(id, email, name, level);
+
+        verify(userRepository).findById(id);
+
+        assertThat(user.getId()).isEqualTo(id);
+        assertThat(user.getEmail()).isEqualTo(email);
+        assertThat(user.getName()).isEqualTo(name);
+        assertThat(user.getLevel()).isEqualTo(level);
     }
 }

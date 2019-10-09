@@ -3,10 +3,12 @@ package me.changjun.restaurant.application;
 import me.changjun.restaurant.domain.User;
 import me.changjun.restaurant.domain.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -29,5 +31,11 @@ public class UserService {
                 .email(email)
                 .build();
         return userRepository.save(user);
+    }
+
+    public User updateUser(Long id, String email, String name, int level) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException(""));
+        User updatedUser = user.updateInfo(email, name, level);
+        return updatedUser;
     }
 }

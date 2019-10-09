@@ -34,4 +34,11 @@ public class User {
     public boolean isAdmin() {
         return level > 3;
     }
+
+    public User updateInfo(String email, String name, int level) {
+        this.email = email;
+        this.name = name;
+        this.level = level;
+        return this;
+    }
 }

@@ -1,5 +1,6 @@
 package me.changjun.restaurant.interfaces;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import me.changjun.restaurant.application.UserService;
 import me.changjun.restaurant.domain.User;
 import org.hamcrest.Matchers;
@@ -16,10 +17,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -29,6 +30,8 @@ public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
     @MockBean
     private UserService userService;
 
@@ -65,5 +68,29 @@ public class UserControllerTest {
                 .andExpect(header().string(HttpHeaders.LOCATION, "/api/user/1"));
 
         verify(userService).addUser(email, name);
+    }
+
+    @Test
+    public void update() throws Exception {
+        Long id = 1L;
+        String email = "leechang0423@naver.com";
+        String name = "changjun";
+        int level = 100;
+
+        User mockUser = User.builder()
+                .id(1L)
+                .name(name)
+                .email(email)
+                .level(100)
+                .build();
+
+        mockMvc.perform(patch("/api/users/"+mockUser.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(mockUser))
+        )
+                .andExpect(status().isOk());
+
+        verify(userService).updateUser(eq(id),eq(email),eq(name),eq(level));
+
     }
 }
