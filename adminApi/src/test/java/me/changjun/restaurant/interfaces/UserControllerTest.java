@@ -3,6 +3,7 @@ package me.changjun.restaurant.interfaces;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.changjun.restaurant.application.UserService;
 import me.changjun.restaurant.domain.User;
+import me.changjun.restaurant.domain.UserNotFoundException;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -84,13 +86,43 @@ public class UserControllerTest {
                 .level(100)
                 .build();
 
-        mockMvc.perform(patch("/api/users/"+mockUser.getId())
+        mockMvc.perform(patch("/api/users/" + mockUser.getId())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(objectMapper.writeValueAsString(mockUser))
         )
                 .andExpect(status().isOk());
 
-        verify(userService).updateUser(eq(id),eq(email),eq(name),eq(level));
+        verify(userService).updateUser(eq(id), eq(email), eq(name), eq(level));
+    }
 
+    @Test
+    public void deActivate() throws Exception {
+        mockMvc.perform(delete("/api/users/1"))
+                .andExpect(status().isOk());
+
+        verify(userService).deActiveUser(any());
+    }
+
+    @Test
+    public void updateWithNotFoundUser() throws Exception {
+        Long id = 404L;
+        String email = "leechang0423@naver.com";
+        String name = "changjun";
+        int level = 100;
+
+        User user = User.builder()
+                .id(id)
+                .email(email)
+                .name(name)
+                .level(level)
+                .build();
+
+        given(userService.updateUser(id, email, name, level)).willThrow(new UserNotFoundException(id));
+        mockMvc.perform(patch("/api/users/" + id)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(user))
+        )
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("{}"));
     }
 }

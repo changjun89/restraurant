@@ -24,6 +24,24 @@ public class UserTest {
         assertThat(user.getEmail()).isEqualTo(email);
         assertThat(user.getLevel()).isEqualTo(level);
         assertThat(user.isAdmin()).isFalse();
+        assertThat(user.isActive()).isTrue();
 
+    }
+
+    @Test
+    public void deActive() {
+        //given
+        User user = User.builder()
+                .id(1L)
+                .email("leechang0423@naver.com")
+                .name("changjun")
+                .level(100)
+                .build();
+        //when
+        user.deActive();
+        //then
+        assertThat(user.getId()).isEqualTo(1L);
+        assertThat(user.getLevel()).isEqualTo(0);
+        assertThat(user.isActive()).isFalse();
     }
 }

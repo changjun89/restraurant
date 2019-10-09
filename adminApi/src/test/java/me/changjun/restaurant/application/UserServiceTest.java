@@ -87,4 +87,23 @@ public class UserServiceTest {
         assertThat(user.getName()).isEqualTo(name);
         assertThat(user.getLevel()).isEqualTo(level);
     }
+
+    @Test
+    public void deActiveUser() {
+        Long id = 1L;
+        User mockUser = User.builder()
+                .id(id)
+                .name("changjun")
+                .level(100)
+                .build();
+
+        given(userRepository.findById(id)).willReturn(Optional.ofNullable(mockUser));
+
+        User user = userService.deActiveUser(id);
+
+        verify(userRepository).findById(id);
+        assertThat(user.getId()).isEqualTo(id);
+        assertThat(user.getLevel()).isEqualTo(0);
+
+    }
 }
