@@ -28,8 +28,7 @@ public class User {
     @NotEmpty
     private String name;
 
-    @NotNull
-    private int level;
+    private int level = 1;
 
     public boolean isAdmin() {
         return level > 3;
