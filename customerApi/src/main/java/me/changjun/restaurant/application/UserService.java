@@ -13,17 +13,19 @@ import java.util.Optional;
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User create(String email, String name, String password) {
         Optional<User> existed = userRepository.findByEmail(email);
-        if(existed.isPresent()) {
+        if (existed.isPresent()) {
             throw new EmailExistedException(email);
         }
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
         String encodedPassword = passwordEncoder.encode(password);
         User user = User.builder()
                 .name(name)
@@ -32,5 +34,14 @@ public class UserService {
                 .build();
 
         return userRepository.save(user);
+    }
+
+
+    public User authenticate(String email, String password) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new EmailNotExistedException(email));
+        if(!passwordEncoder.matches(password, user.getPassword())) {
+            throw new PasswordWrongException();
+        }
+        return user;
     }
 }

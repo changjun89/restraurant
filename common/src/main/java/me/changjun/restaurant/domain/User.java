@@ -1,5 +1,6 @@
 package me.changjun.restaurant.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,5 +50,12 @@ public class User {
 
     public boolean isActive() {
         return level > 0;
+    }
+
+    public String getAccessToken() {
+        if(password == null ){
+            return "";
+        }
+        return password.substring(0,10);
     }
 }
