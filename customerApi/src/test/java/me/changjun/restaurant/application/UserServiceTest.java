@@ -7,9 +7,12 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 public class UserServiceTest {
@@ -44,5 +47,23 @@ public class UserServiceTest {
         assertThat(user.getName()).isEqualTo("changjun");
         assertThat(user.getEmail()).isEqualTo("leechang0423@naver.com");
         assertThat(user.getPassword()).isEqualTo(password);
+    }
+
+    @Test(expected = EmailExistedException.class)
+    public void createWithExistedEmail() {
+        //given
+        String email = "leechang0423@naver.com";
+        String name = "changjun";
+        String password = "password";
+
+        User mockUser = User.builder().build();
+        given(userRepository.findByEmail(email)).willReturn(Optional.of(mockUser));
+
+        //when
+        userService.create(email,name,password);
+        //then
+        verify(userRepository,never()).save(any());
+
+
     }
 }
