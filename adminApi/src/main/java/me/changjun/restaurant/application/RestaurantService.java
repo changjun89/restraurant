@@ -1,6 +1,8 @@
 package me.changjun.restaurant.application;
 
-import me.changjun.restaurant.domain.*;
+import me.changjun.restaurant.domain.Restaurant;
+import me.changjun.restaurant.domain.RestaurantNotFoundException;
+import me.changjun.restaurant.domain.RestaurantRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

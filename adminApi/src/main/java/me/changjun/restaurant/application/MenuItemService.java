@@ -4,7 +4,6 @@ import me.changjun.restaurant.domain.MenuItem;
 import me.changjun.restaurant.domain.MenuItemRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,7 +21,7 @@ public class MenuItemService {
     }
 
     private void update(Long id, MenuItem menuItem) {
-        if(menuItem.isDestroy()) {
+        if (menuItem.isDestroy()) {
             menuItemRepository.deleteById(menuItem.getId());
             return;
         }
