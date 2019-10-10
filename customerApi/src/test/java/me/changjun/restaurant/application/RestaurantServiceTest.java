@@ -73,7 +73,6 @@ public class RestaurantServiceTest {
         assertThat(restaurants.get(0).getCategoryId()).isEqualTo(1L);
         assertThat(restaurants.get(0).getLocation()).isEqualTo("서울");
 
-
         List<MenuItem> menuItems = restaurants.get(0).getMenuItem();
         assertThat(menuItems.get(0).getName()).isEqualTo("Kimchi");
     }
