@@ -5,6 +5,7 @@ import me.changjun.restaurant.application.EmailNotExistedException;
 import me.changjun.restaurant.application.PasswordWrongException;
 import me.changjun.restaurant.application.UserService;
 import me.changjun.restaurant.domain.User;
+import me.changjun.utils.JwtUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -28,6 +31,7 @@ public class SessionControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
     @MockBean
     private UserService userService;
 
@@ -47,7 +51,8 @@ public class SessionControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(header().string(HttpHeaders.LOCATION, "/api/session"))
-                .andExpect(content().string("{\"accessToken\":\"ACCESSTOKE\"}"));
+                .andExpect(content().string(containsString("{\"accessToken\":\"")))
+                .andExpect(content().string(containsString(".")));
 
         verify(userService).authenticate(eq(email), eq(password));
     }
