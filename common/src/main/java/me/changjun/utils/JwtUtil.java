@@ -1,11 +1,26 @@
 package me.changjun.utils;
 
-import org.springframework.stereotype.Component;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
-@Component
+import javax.crypto.SecretKey;
+
 public class JwtUtil {
 
-    public String createToken(long id, String name) {
-        return "header.payload.signature";
+    private final SecretKey key;
+
+    public JwtUtil(String secret) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    }
+
+    public String createToken(long userId, String name) {
+
+        String token = Jwts.builder()
+                .claim("userId", userId)
+                .claim("name", name)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+        return token;
     }
 }

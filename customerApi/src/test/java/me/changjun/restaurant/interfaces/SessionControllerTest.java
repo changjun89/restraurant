@@ -33,16 +33,24 @@ public class SessionControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
+    private JwtUtil jwtUtil;
+
+    @MockBean
     private UserService userService;
 
     @Test
     public void createWithValidPassword() throws Exception {
+        long id = 1L;
+        String name = "changjun";
         String email = "leechang0423@naver.com";
         String password = "password";
         User mockUser = User.builder()
-                .password("ACCESSTOKEN")
+                .id(id)
+                .name(name)
                 .build();
         given(userService.authenticate(email, password)).willReturn(mockUser);
+
+        given(jwtUtil.createToken(id,name)).willReturn("header.payload.signature");
 
         mockMvc.perform(post("/api/session/")
                 .content("{\"email\":\"leechang0423@naver.com\",\"name\":\"changjun\",\"password\":\"password\"}")
@@ -51,8 +59,7 @@ public class SessionControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(header().string(HttpHeaders.LOCATION, "/api/session"))
-                .andExpect(content().string(containsString("{\"accessToken\":\"")))
-                .andExpect(content().string(containsString(".")));
+                .andExpect(content().string(containsString("{\"accessToken\":\"header.payload.signature\"")));
 
         verify(userService).authenticate(eq(email), eq(password));
     }
