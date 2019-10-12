@@ -44,18 +44,4 @@ public class UserTest {
         assertThat(user.getLevel()).isEqualTo(0);
         assertThat(user.isActive()).isFalse();
     }
-
-    @Test
-    public void accessTokenWithPassword() {
-        User user = User.builder().password("ACCESSTOKEN").build();
-
-        assertThat(user.getAccessToken()).isEqualTo("ACCESSTOKE");
-    }
-
-    @Test
-    public void accessTokenWithNoPassword() {
-        User user = User.builder().build();
-
-        assertThat(user.getAccessToken()).isEqualTo("");
-    }
 }
