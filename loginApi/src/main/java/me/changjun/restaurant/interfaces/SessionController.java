@@ -26,7 +26,8 @@ public class SessionController {
     public ResponseEntity<SessionResponseDto> create(@RequestBody SessionRequestDto resource) throws URISyntaxException {
         User user = userService.authenticate(resource.getEmail(), resource.getPassword());
 
-        String accessToken = jwtUtil.createToken(user.getId(),user.getName());
+        String accessToken = jwtUtil.createToken(user.getId(), user.getName()
+                , user.isRestaurantOwner() ? user.getRestaurantId() : null);
         URI uri = new URI("/api/session");
         return ResponseEntity.created(uri).body(
                 SessionResponseDto.builder()

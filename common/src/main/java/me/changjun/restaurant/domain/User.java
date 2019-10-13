@@ -1,6 +1,5 @@
 package me.changjun.restaurant.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,6 +29,8 @@ public class User {
 
     private String password;
 
+    private Long restaurantId;
+
     private int level = 1;
 
     public boolean isAdmin() {
@@ -48,8 +49,16 @@ public class User {
         return this;
     }
 
+    public void setRestaurantId(Long restaurantId) {
+        this.level = 50;
+        this.restaurantId = restaurantId;
+    }
+
     public boolean isActive() {
         return level > 0;
     }
 
+    public boolean isRestaurantOwner() {
+        return level == 50;
+    }
 }

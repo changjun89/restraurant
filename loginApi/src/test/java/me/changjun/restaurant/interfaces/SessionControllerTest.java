@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -39,7 +38,7 @@ public class SessionControllerTest {
     private UserService userService;
 
     @Test
-    public void createWithValidPassword() throws Exception {
+    public void createWithValidAttribute() throws Exception {
         long id = 1L;
         String name = "changjun";
         String email = "leechang0423@naver.com";
@@ -50,7 +49,36 @@ public class SessionControllerTest {
                 .build();
         given(userService.authenticate(email, password)).willReturn(mockUser);
 
-        given(jwtUtil.createToken(id,name)).willReturn("header.payload.signature");
+        given(jwtUtil.createToken(id, name, null)).willReturn("header.payload.signature");
+
+        mockMvc.perform(post("/api/session/")
+                .content("{\"email\":\"leechang0423@naver.com\",\"name\":\"changjun\",\"password\":\"password\"}")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+        )
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(header().string(HttpHeaders.LOCATION, "/api/session"))
+                .andExpect(content().string(containsString("{\"accessToken\":\"header.payload.signature\"")));
+
+        verify(userService).authenticate(eq(email), eq(password));
+    }
+
+    @Test
+    public void createRestaurantId() throws Exception {
+        long id = 1L;
+        String name = "changjun";
+        String email = "leechang0423@naver.com";
+        String password = "password";
+        long restaurantId = 50L;
+        User mockUser = User.builder()
+                .id(id)
+                .name(name)
+                .level(50)
+                .restaurantId(restaurantId)
+                .build();
+        given(userService.authenticate(email, password)).willReturn(mockUser);
+
+        given(jwtUtil.createToken(id, name, restaurantId)).willReturn("header.payload.signature");
 
         mockMvc.perform(post("/api/session/")
                 .content("{\"email\":\"leechang0423@naver.com\",\"name\":\"changjun\",\"password\":\"password\"}")
