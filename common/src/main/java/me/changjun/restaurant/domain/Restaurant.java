@@ -27,7 +27,6 @@ public class Restaurant {
 
     @NotNull
     private Long categoryId;
-    @NotNull
     @NotEmpty
     private String name;
     @NotEmpty
