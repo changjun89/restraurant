@@ -16,3 +16,5 @@ spring:
   profiles: test
   datasource:
     url: jdbc:h2:mem:test
+jwt:
+  secret: 12345678901234567890123456789012

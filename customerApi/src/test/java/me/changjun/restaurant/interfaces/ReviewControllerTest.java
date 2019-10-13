@@ -13,8 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -34,27 +33,26 @@ public class ReviewControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-
-
     @Test
     public void createWithValidData() throws Exception {
+        String token = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJDaGFuZ2p1biJ9.9y_qfcOH9PlX6942ajVOpMs6ateGYL3OCuyUU9-uByw";
         Review review = Review.builder().id(1L)
-                .name("changjun")
+                .name("Changjun")
                 .score(3)
                 .description("good")
                 .build();
 
-        given(reviewService.addReview(eq(1L),any())).willReturn(review);
+        given(reviewService.addReview(eq(1L),eq("Changjun"),eq(3),eq("good"))).willReturn(review);
         mockMvc.perform(post("/api/restaurants/1/reviews")
+                .header("Authorization","Bearer "+token)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content("{\"name\":\"changjun\",\"score\":3,\"description\":\"good\"}")
+                .content("{\"score\":3,\"description\":\"good\"}")
         )
                 .andExpect(status().isCreated())
                 .andExpect(header().string(HttpHeaders.LOCATION,"/api/restaurants/1/reviews/1"));
 
-        verify(reviewService).addReview(eq(1L),any());
+        verify(reviewService).addReview(eq(1L),eq("Changjun"),eq(3),eq("good"));
     }
-
 
     @Test
     public void createWithInValidData() throws Exception {
@@ -64,6 +62,6 @@ public class ReviewControllerTest {
         )
                 .andExpect(status().isBadRequest());
 
-        verify(reviewService,never()).addReview(eq(1L),any());
+        verify(reviewService,never()).addReview(any(),any(),anyInt(),any());
     }
 }
