@@ -37,20 +37,15 @@ public class ReservationServiceTest {
         LocalTime time = LocalTime.of(12, 00);
         int partySize = 5;
 
-        Reservation mockReservation = Reservation.builder()
-                .id(1L)
-                .userId(userId)
-                .name(name)
-                .date(date)
-                .time(time)
-                .partySize(partySize)
-                .build();
-        given(reservationRepository.save(any())).willReturn(mockReservation);
+        given(reservationRepository.save(any())).will(invocation ->
+        {
+            Reservation reservation = invocation.getArgument(0);
+            return reservation;
+        });
 
         Reservation reservation = reservationService.addReservation(restaurantId, userId, name, date, time, partySize);
 
         verify(reservationRepository).save(any());
-        assertThat(reservation.getId()).isNotNull();
         assertThat(reservation.getUserId()).isEqualTo(userId);
         assertThat(reservation.getName()).isEqualTo(name);
         assertThat(reservation.getDate()).isEqualTo(date);

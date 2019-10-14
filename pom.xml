@@ -18,6 +18,7 @@
         <module>adminApi</module>
         <module>customerApi</module>
         <module>loginApi</module>
+        <module>restaurantApi</module>
     </modules>
     <name>restaurant</name>
     <description>Restaurant</description>

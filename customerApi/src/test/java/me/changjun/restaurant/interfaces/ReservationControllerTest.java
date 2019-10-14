@@ -45,6 +45,7 @@ public class ReservationControllerTest {
         Long restaurantId = 1L;
 
         Reservation reservation = Reservation.builder()
+                .restaurantId(1L)
                 .id(1L)
                 .userId(userId)
                 .name(name)
@@ -52,7 +53,7 @@ public class ReservationControllerTest {
                 .time(time)
                 .partySize(partySize)
                 .build();
-
+        System.out.println(objectMapper.writeValueAsString(reservation));
         given(reservationService.addReservation(restaurantId, userId, name, date, time, partySize)).willReturn(reservation);
 
         mockMvc.perform(post("/api/restaurant/1/reservations")

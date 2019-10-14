@@ -29,9 +29,9 @@ public class Reservation {
     private Long userId;
     @NotEmpty
     private String name;
-    @NotEmpty
+
     private LocalDate date;
-    @NotEmpty
+
     private LocalTime time;
     @NotNull
     private int partySize;
