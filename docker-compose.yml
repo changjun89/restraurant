@@ -1,0 +1,60 @@
+version: '3'
+services:
+  mysql:
+    image: mariadb:10.4.7
+    env_file: .env
+    volumes:
+      - ./data/mariadb:/var/lib/mysql
+    ports:
+      - 13306:3306
+    command: |
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
+  loginApi:
+    image: openjdk:8
+    env_file: .env
+    volumes:
+      - ./run.sh:/home/eatgo/run.sh
+      - ./loginApi/build/libs:/home/eatgo/libs
+    ports:
+      - 8001:8080
+    depends_on:
+      - mysql
+    command: bash -c "cd /home/eatgo && sh run.sh"
+  adminApi:
+    image: openjdk:8
+    env_file: .env
+    volumes:
+      - ./run.sh:/home/eatgo/run.sh
+      - ./adminApi/build/libs:/home/eatgo/libs
+    ports:
+      - 8002:8080
+    depends_on:
+      - mysql
+    command: bash -c "cd /home/eatgo && sh run.sh"
+  customerApi:
+    image: openjdk:8
+    env_file: .env
+    volumes:
+      - ./run.sh:/home/eatgo/run.sh
+      - ./customerApi/build/libs:/home/eatgo/libs
+    ports:
+      - 8003:8080
+    depends_on:
+      - mysql
+    command: bash -c "cd /home/eatgo && sh run.sh"
+  restaurantApi:
+    image: openjdk:8
+    env_file: .env
+    volumes:
+      - ./run.sh:/home/eatgo/run.sh
+      - ./restaurantApi/build/libs:/home/eatgo/libs
+    ports:
+      - 8004:8080
+    depends_on:
+      - mysql
+    command: bash -c "cd /home/eatgo && sh run.sh"
